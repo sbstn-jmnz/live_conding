@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Courses from '../views/Courses.vue'
+import Firebase from 'firebase'
+
 
 Vue.use(VueRouter)
 
@@ -25,7 +27,7 @@ const routes = [
     name: 'admin',
     component: () => import(/* webpackChunkName: "admin" */ '../views/Admin.vue'),
     meta: {
-      requireAuth: true
+      login: true
     }
   },
   {
@@ -41,4 +43,15 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  let user = Firebase.auth().currentUser;
+  let authRequired = to.matched.some(route => route.meta.login);
+  console.log(user)
+  console.log(authRequired)
+  if (!user && authRequired) {
+    next('/login')
+  } else {
+    next();
+  }
+})
 export default router
