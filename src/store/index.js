@@ -13,7 +13,14 @@ export default new Vuex.Store({
   },
   mutations: {
     GET_COURSES(state, courses) {
-      state.courses = courses
+      state.courses = []
+      courses.forEach(course => {
+        course.link = course.data.name
+          .toLowerCase()
+          .replace(/[^a-zA-Z0-9 -]/, "")
+          .replace(/\s/g, "-");
+        state.courses.push(course)
+      })
     }
   },
   actions: {
